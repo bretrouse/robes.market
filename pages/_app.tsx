@@ -41,7 +41,7 @@ function Bags({ Component, pageProps }) {
           property="og:description"
           content="See the floor price of Divine Robes from the Loot project."
         />
-        <meta property="og:image" content="https://robes.market/og.png" />
+        <meta property="og:image" content="https://floorbags.market/og.png" />
         <script
           data-goatcounter="https://divinerobes.goatcounter.com/count"
           async
