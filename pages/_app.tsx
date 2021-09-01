@@ -39,7 +39,7 @@ function Bags({ Component, pageProps }) {
         <link rel="icon" type="image/png" href="/favicon.png" />
         <meta
           property="og:description"
-          content="See the floor price of Divine Robes from the Loot project."
+          content="See the floor price of any Loot item from the Loot project."
         />
         <meta property="og:image" content="https://floorbags.market/og.png" />
         <script
