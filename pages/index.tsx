@@ -21,9 +21,9 @@ const Bag = ({ bag }: { bag: BagInfo }) => {
 
 const IndexPage = () => {
 
-  const [bags, setBags] = useState<array | null>(null)
-  const [selectedLoot, setSelectedLoot] = useState<string>('')
-  const [lastUpdate, setLastUpdate] = useState<string>('')
+  const [bags, setBags] = useState([])
+  const [selectedLoot, setSelectedLoot] = useState('')
+  const [lastUpdate, setLastUpdate] = useState('')
 
   const selectLoot = useCallback(async (selection) => {
     console.log('updating loot bags')
