@@ -45,8 +45,8 @@ const IndexPage = () => {
       </div>
       <div className="text-center max-w-screen-md md:leading-loose">
         <p className="md:text-xl">
-          There are {bags ? bags.length : ''} bags for sale with {selectedLoot}. The floor
-          price is {bags ? bags[0].price : '___'} ETH.
+          There are {bags ? bags.length : ''} bags for sale with <i>{selectedLoot}</i>. The floor
+          price is {(bags && bags.length) ? bags[0].price : '___'} ETH.
         </p>
         <p className="md:text-lg pt-2">
           Site by{' '}
