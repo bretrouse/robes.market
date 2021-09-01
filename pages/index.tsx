@@ -49,15 +49,7 @@ const IndexPage = () => {
           price is {(bags && bags.length) ? bags[0].price : '___'} ETH.
         </p>
         <p className="md:text-lg pt-2">
-          Site by{' '}
-          <a
-            target="_blank"
-            href="https://twitter.com/breterb"
-            className="underline"
-          >
-            Bret Rouse
-          </a>,
-          based on the site{' '}
+          Forked from the site{' '}
           <a
             target="_blank"
             href="https://robes.market/"
@@ -73,7 +65,14 @@ const IndexPage = () => {
           >
             worm_emoji
           </a>
-          .
+          . Search added by{' '}
+          <a
+            target="_blank"
+            href="https://twitter.com/breterb"
+            className="underline"
+          >
+            Bret Rouse
+          </a>,
           <br />
           Join the{' '}
           <a
