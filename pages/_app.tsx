@@ -43,7 +43,7 @@ function Bags({ Component, pageProps }) {
         />
         <meta property="og:image" content="https://floorbags.market/og.png" />
         <script
-          data-goatcounter="https://divinerobes.goatcounter.com/count"
+          data-goatcounter="https://floorbags.goatcounter.com/count"
           async
           src="//gc.zgo.at/count.js"
         ></script>
