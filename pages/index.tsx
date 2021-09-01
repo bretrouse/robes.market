@@ -24,10 +24,11 @@ const IndexPage = () => {
   const [bags, setBags] = useState([])
   const [selectedLoot, setSelectedLoot] = useState('')
   const [lastUpdate, setLastUpdate] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const selectLoot = useCallback(async (selection) => {
-    console.log('updating loot bags')
-    const data = await fetchBags(selection)
+    setIsLoading(true);
+    const data = await fetchBags(selection, setIsLoading)
     setBags(data.bags)
     setLastUpdate(data.lastUpdate)
     setSelectedLoot(selection)
@@ -86,10 +87,11 @@ const IndexPage = () => {
         </p>
         <p className="text-sm mv-4">Last updated {ts(lastUpdate)}</p>
       </div>
+      {isLoading ? <p><marquee>Conjuring</marquee></p> : ''}
       <div className="grid md:grid-cols-2 pt-5">
         {bags ? bags.map((bag) => {
           return <Bag bag={bag} key={bag.id} />
-        }) : ''}
+        }) : (selectedLoot ? 'No bags found for <i>'+selectedLoot+'</i>' : '')}
       </div>
     </div>
   )

@@ -14,30 +14,37 @@ const fetchBagPage = async (ids: string[]) => {
   let url = 'https://api.opensea.io/api/v1/assets?collection=lootproject&'
   url += ids.map((id) => `token_ids=${id}`).join('&')
 
-  const res = await fetch(url, {
-    // headers: {
-    //   'X-API-KEY': apiKey,
-    // },
-  })
-  const json: OpenseaResponse = await res.json()
+  try {
+    let res = await fetch(url, {
+      // headers: {
+      //   'X-API-KEY': apiKey,
+      // },
+    })
+    const json: OpenseaResponse = await res.json()
 
-  return Promise.all(
-    json.assets.map(async (asset) => {
-      // Parse the JSON from the data URI
-      const { image } = JSON.parse(
-        parseDataUrl(asset.token_metadata).toBuffer().toString(),
-      )
-      // Parse the SVG from the data URI
-      const svg = parseDataUrl(image).toBuffer().toString()
-      return {
-        ...asset,
-        image_url: await rarityImage(svg, {
-          colorFn: ({ itemName }) =>
-            itemName.toLowerCase().includes('divine robe') && 'cyan',
-        }),
-      }
-    }),
-  )
+    return Promise.all(
+      json.assets.map(async (asset) => {
+        if(!asset.token_metadata) {
+          return asset
+        }
+        // Parse the JSON from the data URI
+        const { image } = JSON.parse(
+          parseDataUrl(asset.token_metadata).toBuffer().toString(),
+        )
+        // Parse the SVG from the data URI
+        const svg = parseDataUrl(image).toBuffer().toString()
+        return {
+          ...asset,
+          image_url: await rarityImage(svg, {
+            colorFn: ({ itemName }) =>
+              itemName.toLowerCase().includes('divine robe') && 'cyan',
+          }),
+        }
+      }),
+    )
+  } catch (err) {
+    return
+  }
 }
 
 export interface BagInfo {
@@ -47,7 +54,7 @@ export interface BagInfo {
   svg: string
 }
 
-export const fetchBags = async (lootItem) => {
+export const fetchBags = async (lootItem, setLoading) => {
   const chunked = chunk(LootIds[lootItem], 20)
   const data = await pMap(chunked, fetchBagPage, { concurrency: 2 })
   const mapped = flatten(data)
@@ -64,20 +71,10 @@ export const fetchBags = async (lootItem) => {
         svg: a.image_url,
       }
     })
-
+  setLoading(false)
   return {
     bags: orderBy(mapped, ['price', 'id'], ['asc', 'asc']),
     lastUpdate: new Date().toISOString(),
   }
 }
 
-const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
-  try {
-    const data = await fetchBags('')
-    res.status(200).json(data)
-  } catch (err) {
-    res.status(500).json({ statusCode: 500, message: err.message })
-  }
-}
-
-export default handler
