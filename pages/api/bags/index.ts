@@ -2,6 +2,8 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import pMap from 'p-map'
 import { chunk, flatten, orderBy } from 'lodash'
 import { utils as etherUtils, BigNumber } from 'ethers'
+import parseDataUrl from 'parse-data-url'
+import { rarityImage } from 'loot-rarity'
 import type { OpenseaResponse, Asset } from '../../../utils/openseaTypes'
 import Bags from '../../../data/bags.json'
 import LootIds from '../../../data/loot-ids.json'
@@ -18,7 +20,24 @@ const fetchBagPage = async (ids: string[]) => {
     // },
   })
   const json: OpenseaResponse = await res.json()
-  return json.assets
+
+  return Promise.all(
+    json.assets.map(async (asset) => {
+      // Parse the JSON from the data URI
+      const { image } = JSON.parse(
+        parseDataUrl(asset.token_metadata).toBuffer().toString(),
+      )
+      // Parse the SVG from the data URI
+      const svg = parseDataUrl(image).toBuffer().toString()
+      return {
+        ...asset,
+        image_url: await rarityImage(svg, {
+          colorFn: ({ itemName }) =>
+            itemName.toLowerCase().includes('divine robe') && 'cyan',
+        }),
+      }
+    }),
+  )
 }
 
 export interface BagInfo {
@@ -32,25 +51,20 @@ export const fetchBags = async (lootItem) => {
   const chunked = chunk(LootIds[lootItem], 20)
   const data = await pMap(chunked, fetchBagPage, { concurrency: 2 })
   const mapped = flatten(data)
-    .filter((d) => {
-      return (
-        d.sell_orders &&
-        d.sell_orders.length > 0 &&
-        d.sell_orders[0].payment_token_contract.symbol == 'ETH'
-      )
-    })
+    .filter((d) => d?.sell_orders?.[0]?.payment_token_contract.symbol === 'ETH')
     .map((a: Asset): BagInfo => {
       return {
         id: a.token_id,
         price: Number(
           etherUtils.formatUnits(
-            BigNumber.from(a.sell_orders[0].current_price.split('.')[0]),
+            BigNumber.from(a.sell_orders[0]?.current_price.split('.')[0]),
           ),
         ),
         url: a.permalink + '?ref=0xfb843f8c4992efdb6b42349c35f025ca55742d33',
         svg: a.image_url,
       }
     })
+
   return {
     bags: orderBy(mapped, ['price', 'id'], ['asc', 'asc']),
     lastUpdate: new Date().toISOString(),
