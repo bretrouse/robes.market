@@ -1,6 +1,7 @@
 import 'tailwindcss/tailwind.css'
 import Head from 'next/head'
-function Robes({ Component, pageProps }) {
+
+function Bags({ Component, pageProps }) {
   return (
     <>
       <Component {...pageProps} />
@@ -11,19 +12,30 @@ function Robes({ Component, pageProps }) {
             color: white;
             overflow-x: hidden;
           }
+          input {
+            color: black;
+          }
+          .autocomplete{
+            position: absolute;
+            background: grey;
+            color: black;
+            margin-left: 128px;
+            height: 200px;
+            overflow: auto;
+          }
         `}
       </style>
       <Head>
-        <title>robes.market</title>
+        <title>floorbags.market</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600;700&display=swap"
           rel="stylesheet"
         />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:creator" content="@worm_emoji" />
-        <meta property="og:url" content="https://robes.market" />
-        <meta property="og:title" content="robes.market" />
+        <meta name="twitter:creator" content="@breterb" />
+        <meta property="og:url" content="https://floorbags.market" />
+        <meta property="og:title" content="floorbags.market" />
         <link rel="icon" type="image/png" href="/favicon.png" />
         <meta
           property="og:description"
@@ -40,4 +52,4 @@ function Robes({ Component, pageProps }) {
   )
 }
 
-export default Robes
+export default Bags

@@ -3,33 +3,34 @@ import pMap from 'p-map'
 import { chunk, flatten, orderBy } from 'lodash'
 import { utils as etherUtils, BigNumber } from 'ethers'
 import type { OpenseaResponse, Asset } from '../../../utils/openseaTypes'
-import RobeIDs from '../../../data/robes-ids.json'
+import Bags from '../../../data/bags.json'
+import LootIds from '../../../data/loot-ids.json'
 
-const chunked = chunk(RobeIDs, 20)
-const apiKey = process.env.OPENSEA_API_KEY
+//const apiKey = process.env.OPENSEA_API_KEY
 
-const fetchRobePage = async (ids: string[]) => {
+const fetchBagPage = async (ids: string[]) => {
   let url = 'https://api.opensea.io/api/v1/assets?collection=lootproject&'
   url += ids.map((id) => `token_ids=${id}`).join('&')
 
   const res = await fetch(url, {
-    headers: {
-      'X-API-KEY': apiKey,
-    },
+    // headers: {
+    //   'X-API-KEY': apiKey,
+    // },
   })
   const json: OpenseaResponse = await res.json()
   return json.assets
 }
 
-export interface RobeInfo {
+export interface BagInfo {
   id: string
   price: Number
   url: string
   svg: string
 }
 
-export const fetchRobes = async () => {
-  const data = await pMap(chunked, fetchRobePage, { concurrency: 2 })
+export const fetchBags = async (lootItem) => {
+  const chunked = chunk(LootIds[lootItem], 20)
+  const data = await pMap(chunked, fetchBagPage, { concurrency: 2 })
   const mapped = flatten(data)
     .filter((d) => {
       return (
@@ -38,7 +39,7 @@ export const fetchRobes = async () => {
         d.sell_orders[0].payment_token_contract.symbol == 'ETH'
       )
     })
-    .map((a: Asset): RobeInfo => {
+    .map((a: Asset): BagInfo => {
       return {
         id: a.token_id,
         price: Number(
@@ -51,14 +52,14 @@ export const fetchRobes = async () => {
       }
     })
   return {
-    robes: orderBy(mapped, ['price', 'id'], ['asc', 'asc']),
+    bags: orderBy(mapped, ['price', 'id'], ['asc', 'asc']),
     lastUpdate: new Date().toISOString(),
   }
 }
 
 const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const data = await fetchRobes()
+    const data = await fetchBags()
     res.status(200).json(data)
   } catch (err) {
     res.status(500).json({ statusCode: 500, message: err.message })
