@@ -1,6 +1,6 @@
 import { BagInfo, fetchBags } from './api/bags'
 import { format as ts } from 'timeago.js'
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useState } from "react"
 import Loot from '../data/loot.json'
 import AutoComplete from './components/Autocomplete'
 
@@ -11,7 +11,7 @@ const Bag = ({ bag }: { bag: BagInfo }) => {
       <div className="m-auto pb-4 mb-8 flex flex-col justify-center items-center gap-2 p-4 md:m-4 border border-white transform hover:scale-105 transition-all bg-black w-full md:w-96">
         <img src={bag.svg} alt="" width="350" height="350" />
         <div className="text-center">
-          <p className="text-lg">#{bag.id}</p>
+          <p className="text-lg">{bag.id}</p>
           <p>{bag.price} ETH</p>
         </div>
       </div>

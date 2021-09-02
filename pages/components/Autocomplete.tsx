@@ -11,7 +11,7 @@ const AutoComplete = (props) => {
     const input = e.currentTarget.value;
     const newFilteredSuggestions = suggestions.filter(
       suggestion =>
-        suggestion.toLowerCase().indexOf(input.toLowerCase()) > -1
+        suggestion.toLowerCase().indexOf(input.toLowerCase()) > -1 
     ).sort(function (a, b) {
       return a.length - b.length;
     });
