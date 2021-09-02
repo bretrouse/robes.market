@@ -87,12 +87,15 @@ const IndexPage = () => {
         </p>
         <p className="text-sm mv-4">Last updated {ts(lastUpdate)}</p>
       </div>
-      {isLoading ? <p><marquee>Conjuring...</marquee></p> : ''}
-      <div className="grid md:grid-cols-2 pt-5">
-        {bags ? bags.map((bag) => {
-          return <Bag bag={bag} key={bag.id} />
-        }) : (selectedLoot ? 'No bags found for <i>'+selectedLoot+'</i>' : '')}
-      </div>
+      {isLoading ? 
+        <p><marquee>Conjuring...</marquee></p>
+        :
+        <div className="grid md:grid-cols-2 pt-5">
+          {bags ? bags.map((bag) => {
+            return <Bag bag={bag} key={bag.id} />
+          }) : (selectedLoot ? 'No bags found for <i>'+selectedLoot+'</i>' : '')}
+        </div>
+      }
     </div>
   )
 }
